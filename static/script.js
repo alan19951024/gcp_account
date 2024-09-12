@@ -41,7 +41,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     event.preventDefault();
     document.getElementById('loading').style.display = 'block';
     const formData = new FormData(this);
-    fetch('http://127.0.0.1:5000/upload', { // 確保 URL 正確
+    fetch('https://gcp-account.onrender.com/upload', { // 確保 URL 正確
         method: 'POST',
         body: formData
     })
@@ -59,7 +59,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
             downloadButton.classList.add('completed'); 
             downloadButton.onclick = function() {
                 const link = document.createElement('a');
-                link.href = `http://127.0.0.1:5000/download/${data.filename}`;
+                link.href = `https://gcp-account.onrender.com/download/${data.filename}`;
                 link.download = data.filename;
                 link.click()
             };

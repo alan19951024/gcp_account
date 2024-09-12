@@ -7,6 +7,8 @@ import os
 app = Flask(__name__, static_folder='static',template_folder="templates")
 CORS(app)  # 啟用所有路徑的 CORS 支持
 # 如果只允許特定的路徑和域名:
+CORS(app, resources={r"/upload": {"origins": "https://gcp-account.onrender.com"}})
+
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DOWNLOAD_FOLDER'] = 'downloads'
 
