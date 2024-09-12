@@ -43,7 +43,8 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     const formData = new FormData(this);
     fetch('https://gcp-account.onrender.com/upload', { // 確保 URL 正確
         method: 'POST',
-        body: formData
+        body: formData,
+        mode: 'cors'
     })
     .then(response => {
         if (!response.ok) {

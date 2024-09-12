@@ -7,7 +7,7 @@ import os
 app = Flask(__name__, static_folder='static',template_folder="templates")
 CORS(app)  # 啟用所有路徑的 CORS 支持
 # 如果只允許特定的路徑和域名:
-CORS(app, resources={r"/upload": {"origins": "https://gcp-account.onrender.com"}})
+# CORS(app, resources={r"/upload": {"origins": "https://gcp-account.onrender.com"}})
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DOWNLOAD_FOLDER'] = 'downloads'
@@ -15,6 +15,10 @@ app.config['DOWNLOAD_FOLDER'] = 'downloads'
 # 確保上傳和下載資料夾存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['DOWNLOAD_FOLDER'], exist_ok=True)
+
+@app.route('/test', methods=['POST'])
+def test_route():
+    return jsonify(success=True, message="POST request successful")
 
 @app.route('/')
 def index():
