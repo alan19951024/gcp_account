@@ -1,9 +1,12 @@
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, jsonify
+from flask_cors import CORS
 import pandas as pd
 from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__, static_folder='static',template_folder="templates")
+CORS(app)  # 啟用所有路徑的 CORS 支持
+# 如果只允許特定的路徑和域名:
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DOWNLOAD_FOLDER'] = 'downloads'
 
