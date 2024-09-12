@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上傳檔案</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>上傳檔案</h1>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <div class="file-upload">
+            <label>選擇第一個:每月用量Excel 檔案</label>
+            <input type="file" name="file1" id="file1" required style="display: none;">
+            <button type="button" id="file1Button">選擇檔案</button>
+            <span id="file1Name" class="file-name"></span>
+        </div>
+
+        <div class="file-upload">
+            <label>選擇第二個:SCC用量Excel 檔案</label>
+            <input type="file" name="file2" id="file2" required style="display: none;">
+            <button type="button" id="file2Button">選擇檔案</button>
+            <span id="file2Name" class="file-name"></span>
+        </div>
+
+        <div class="file-upload">
+            <label>選擇範本 CSV 檔案:</label>
+            <input type="file" name="template" id="template" required style="display: none;">
+            <button type="button" id="templateButton">選擇檔案</button>
+            <span id="templateName" class="file-name"></span>
+        </div>
+
+        <div class="button-container">
+            <input type="submit" value="上傳">
+            <button type="button" id="clearButton">全部清除</button>
+        </div>
+    </form>
+
+    <div id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <button id="downloadButton" disabled>下載處理好的檔案</button>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+#loading {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.spinner {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+button {
+    background-color: #959595;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    font-size: 16px;
+    font-weight: bolder;
+}
+
+button:disabled {
+    background-color: #c1c6c6;
+    cursor: not-allowed;
+}
+
+button:hover:enabled {
+    background-color: #2d322f;
+}
+
+#clearButton {
+    background-color: rgb(221, 50, 81);
+    color: white;
+}
+
+#clearButton:hover {
+    background-color: darkred;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.file-name {
+    display: flex;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box; /* 確保 padding 不會影響寬度 */
+}
+
+.file-upload {
+    width: 100%;
+    margin-bottom: 3vh;
+}
+
+/* 定義 downloadButton 的基本樣式 */
+#downloadButton {
+    background-color: #d0d0d0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    /* cursor: pointer; */
+    width: 100%;
+    max-width: 400px;
+    font-size: 16px;
+    font-weight: bolder;
+    transition: background-color 0.3s ease; /* 添加過渡效果 */
+}
+
+/* 當上傳完成後的樣式 */
+#downloadButton.completed {
+    background-color: #28a745; /* 綠色 */
+    animation: pulse 1s infinite; /* 添加動畫效果 */
+}
+
+/* 定義 pulse 動畫 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
