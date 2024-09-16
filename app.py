@@ -24,7 +24,7 @@ def test_route():
 def index():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
+@app.route('https://gcp-account.onrender.com/upload', methods=['POST'])
 def upload_file():
     if 'file1' not in request.files or 'file2' not in request.files or 'template' not in request.files:
         return jsonify(success=False, message="Missing files")
@@ -50,7 +50,7 @@ def upload_file():
     except Exception as e:
         return jsonify(success=False, message=str(e))
 
-@app.route('/download/<filename>')
+@app.route('https://gcp-account.onrender.com/download/<filename>')
 def download_file(filename):
     return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename, as_attachment=True)
 
