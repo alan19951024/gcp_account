@@ -1,54 +1,76 @@
-document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+document.getElementById('file1Button').addEventListener('click', function() {
+    document.getElementById('file1').click();
+});
+
+document.getElementById('file1').addEventListener('change', function() {
+    document.getElementById('file1Name').textContent = this.files[0] ? this.files[0].name : '';
+});
+
+document.getElementById('file2Button').addEventListener('click', function() {
+    document.getElementById('file2').click();
+});
+
+document.getElementById('file2').addEventListener('change', function() {
+    document.getElementById('file2Name').textContent = this.files[0] ? this.files[0].name : '';
+});
+
+document.getElementById('templateButton').addEventListener('click', function() {
+    document.getElementById('template').click();
+});
+
+document.getElementById('template').addEventListener('change', function() {
+    document.getElementById('templateName').textContent = this.files[0] ? this.files[0].name : '';
+});
+
+document.getElementById('clearButton').addEventListener('click', function() {
+    document.getElementById('file1').value = '';
+    document.getElementById('file1Name').textContent = '';
+    document.getElementById('file2').value = '';
+    document.getElementById('file2Name').textContent = '';
+    document.getElementById('template').value = '';
+    document.getElementById('templateName').textContent = '';
+
+    // 清除處理好的檔案並還原按鈕樣式
+    const downloadButton = document.getElementById('downloadButton');
+    downloadButton.disabled = true;
+    downloadButton.classList.remove('completed');
+    downloadButton.onclick = null;
+});
+
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
     document.getElementById('loading').style.display = 'block';
+    const formData = new FormData(this);
 
-    try {
-        const file1 = document.getElementById('file1').files[0];
-        const file2 = document.getElementById('file2').files[0];
-        const template = document.getElementById('template').files[0];
-
-        const [file1Content, file2Content, templateContent] = await Promise.all([
-            readFileAsBase64(file1),
-            readFileAsBase64(file2),
-            readFileAsBase64(template)
-        ]);
-
-        const payload = {
-            file1: file1Content,
-            file2: file2Content,
-            template: templateContent
-        };
-
-        const response = await fetch('https://gcpaccount.zeabur.app/process', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
+    fetch('https://gcpaccount.zeabur.app/upload', { // 使用 Flask 伺服器的 upload 路徑
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
         document.getElementById('loading').style.display = 'none';
-
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
         if (data.success) {
             const downloadButton = document.getElementById('downloadButton');
             downloadButton.disabled = false;
             downloadButton.classList.add('completed'); 
-
             downloadButton.onclick = function() {
                 const link = document.createElement('a');
-                const blob = new Blob([data.result], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                link.href = url;
-                link.download = 'processed_data.csv';
+                link.href = `https://gcpaccount.zeabur.app/download/${data.filename}`;
+                link.download = data.filename;
                 link.click();
             };
         } else {
             alert('檔案處理失敗: ' + data.message);
         }
-    } catch (error) {
+    })
+    .catch(error => {
         document.getElementById('loading').style.display = 'none';
         console.error('Error:', error);
         alert('檔案處理失敗: ' + error.message);
-    }
+    });
 });
