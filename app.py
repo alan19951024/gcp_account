@@ -7,6 +7,12 @@ import io
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://gcpaccount.zeabur.app"}})
 
+# 首頁路由
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
 @app.route('/process', methods=['POST'])
 def process_files():
     data = request.get_json()
@@ -49,4 +55,3 @@ def process_files():
 
 if __name__ == '__main__':
     app.run('0.0.0.0', debug=True)
-
