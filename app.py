@@ -21,17 +21,17 @@ def process_files():
         file2_content = data['file2'].split(',')[1]
         template_content = data['template'].split(',')[1]
 
-        # 解碼 base64
+        # Decode base64
         file1 = io.BytesIO(base64.b64decode(file1_content))
         file2 = io.BytesIO(base64.b64decode(file2_content))
         template = io.BytesIO(base64.b64decode(template_content))
+
+        # Try different encodings if needed
+        df1 = pd.read_csv(file1, encoding='utf-8')
+        df2 = pd.read_csv(file2, encoding='utf-8')
+        template_df = pd.read_csv(template, encoding='utf-8')
         
-        # 使用 pandas 讀取 CSV 格式
-        df1 = pd.read_csv(file1)
-        df2 = pd.read_csv(file2)
-        template_df = pd.read_csv(template)
-        
-        # 處理檔案邏輯
+        # Process files
         now = datetime.now()
         last_month = now - timedelta(days=30)
         invoice_month = last_month.strftime("%Y%m")
@@ -44,7 +44,7 @@ def process_files():
             template_df[template_df.columns[i]] = df_combined[df_combined.columns[i]]
         
         output = io.StringIO()
-        template_df.to_csv(output, index=False)
+        template_df.to_csv(output, index=False, encoding='utf-8')
         output.seek(0)
         
         result = output.getvalue()
@@ -55,4 +55,3 @@ def process_files():
 
 if __name__ == '__main__':
     app.run('0.0.0.0', debug=True)
-
