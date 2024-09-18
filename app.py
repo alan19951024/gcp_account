@@ -3,36 +3,35 @@ from flask_cors import CORS
 import pandas as pd
 from datetime import datetime, timedelta
 import io
+import base64
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://gcpaccount.zeabur.app"}})
 
-# 首頁路由
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 @app.route('/process', methods=['POST'])
 def process_files():
-    data = request.get_json()
-    
     try:
-        file1_content = data['file1']
-        file2_content = data['file2']
-        template_content = data['template']
+        data = request.get_json()
         
-        # 轉換為字串流
-        file1 = io.StringIO(file1_content)
-        file2 = io.StringIO(file2_content)
-        template = io.StringIO(template_content)
+        file1_content = data['file1'].split(',')[1]  # Remove 'data:filetype;base64,' part
+        file2_content = data['file2'].split(',')[1]
+        template_content = data['template'].split(',')[1]
+
+        # 解碼 base64
+        file1 = io.BytesIO(base64.b64decode(file1_content))
+        file2 = io.BytesIO(base64.b64decode(file2_content))
+        template = io.BytesIO(base64.b64decode(template_content))
         
         # 使用 pandas 讀取 CSV 格式
         df1 = pd.read_csv(file1)
         df2 = pd.read_csv(file2)
         template_df = pd.read_csv(template)
         
-        # 假設檔案處理邏輯
+        # 處理檔案邏輯
         now = datetime.now()
         last_month = now - timedelta(days=30)
         invoice_month = last_month.strftime("%Y%m")
@@ -48,10 +47,12 @@ def process_files():
         template_df.to_csv(output, index=False)
         output.seek(0)
         
-        return jsonify(success=True, result=output.getvalue())
+        result = output.getvalue()
+        return jsonify(success=True, result=result)
     
     except Exception as e:
         return jsonify(success=False, message=str(e))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', debug=True)
+
