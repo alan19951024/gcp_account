@@ -7,10 +7,11 @@ import os
 app = Flask(__name__, static_folder='static',template_folder="templates")
 CORS(app)  # 啟用所有路徑的 CORS 支持
 # 如果只允許特定的路徑和域名:
-# CORS(app, resources={r"/upload": {"origins": "https://gcp-account.onrender.com"}})
+CORS(app, resources={r"/upload": {"origins": "https://gcpaccount.zeabur.app"}})
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['DOWNLOAD_FOLDER'] = 'downloads'
+
+app.config['UPLOAD_FOLDER'] = 'upload'
+app.config['DOWNLOAD_FOLDER'] = 'download'
 
 # 確保上傳和下載資料夾存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -24,7 +25,7 @@ def test_route():
 def index():
     return render_template('index.html')
 
-@app.route('/uploads', methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file1' not in request.files or 'file2' not in request.files or 'template' not in request.files:
         return jsonify(success=False, message="Missing files")
@@ -50,7 +51,7 @@ def upload_file():
     except Exception as e:
         return jsonify(success=False, message=str(e))
 
-@app.route('/downloads/<filename>')
+@app.route('/download/<filename>')
 def download_file(filename):
     return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename, as_attachment=True)
 

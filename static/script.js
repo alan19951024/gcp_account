@@ -41,7 +41,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     event.preventDefault();
     document.getElementById('loading').style.display = 'block';
     const formData = new FormData(this);
-    fetch('https://gcp-account.onrender.com/uploads', { // 確保 URL 正確
+    fetch('https://gcpaccount.zeabur.app/upload', { // 確保 URL 正確
         method: 'POST',
         body: formData,
         mode: 'cors'
@@ -60,7 +60,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
             downloadButton.classList.add('completed'); 
             downloadButton.onclick = function() {
                 const link = document.createElement('a');
-                link.href = `https://gcp-account.onrender.com/downloads/${data.filename}`;
+                link.href = `https://gcpaccount.zeabur.app/download/${data.filename}`;
                 link.download = data.filename;
                 link.click()
             };
