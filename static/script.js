@@ -41,19 +41,19 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     event.preventDefault();
     document.getElementById('loading').style.display = 'block';
     const formData = new FormData(this);
-    fetch('https://gcpaccount.zeabur.app/upload', { // 確保 URL 正確
+
+    fetch('https://gcpaccount.zeabur.app/upload', { // 使用 Flask 伺服器的 upload 路徑
         method: 'POST',
-        body: formData,
-        mode: 'cors'
+        body: formData
     })
     .then(response => {
+        document.getElementById('loading').style.display = 'none';
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        document.getElementById('loading').style.display = 'none';
         if (data.success) {
             const downloadButton = document.getElementById('downloadButton');
             downloadButton.disabled = false;
@@ -62,7 +62,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
                 const link = document.createElement('a');
                 link.href = `https://gcpaccount.zeabur.app/download/${data.filename}`;
                 link.download = data.filename;
-                link.click()
+                link.click();
             };
         } else {
             alert('檔案處理失敗: ' + data.message);
@@ -74,4 +74,3 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         alert('檔案處理失敗: ' + error.message);
     });
 });
-
