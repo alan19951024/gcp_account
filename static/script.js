@@ -40,37 +40,67 @@ document.getElementById('clearButton').addEventListener('click', function() {
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
     document.getElementById('loading').style.display = 'block';
-    const formData = new FormData(this);
 
-    fetch('https://gcpaccount.zeabur.app/upload', { // 使用 Flask 伺服器的 upload 路徑
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        document.getElementById('loading').style.display = 'none';
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            const downloadButton = document.getElementById('downloadButton');
-            downloadButton.disabled = false;
-            downloadButton.classList.add('completed'); 
-            downloadButton.onclick = function() {
-                const link = document.createElement('a');
-                link.href = `https://gcpaccount.zeabur.app/download/${data.filename}`;
-                link.download = data.filename;
-                link.click();
+    // 使用 FileReader 讀取檔案並轉為字串
+    const file1 = document.getElementById('file1').files[0];
+    const file2 = document.getElementById('file2').files[0];
+    const template = document.getElementById('template').files[0];
+
+    const readFileContent = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(file);
+        });
+    };
+
+    // 讀取所有檔案並傳遞給後端
+    Promise.all([readFileContent(file1), readFileContent(file2), readFileContent(template)])
+        .then(([file1Content, file2Content, templateContent]) => {
+            const payload = {
+                file1: file1Content,
+                file2: file2Content,
+                template: templateContent
             };
-        } else {
-            alert('檔案處理失敗: ' + data.message);
-        }
-    })
-    .catch(error => {
-        document.getElementById('loading').style.display = 'none';
-        console.error('Error:', error);
-        alert('檔案處理失敗: ' + error.message);
-    });
+
+            return fetch('https://gcpaccount.zeabur.app/process', { // 使用後端的 process 路徑
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+        })
+        .then(response => {
+            document.getElementById('loading').style.display = 'none';
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const downloadButton = document.getElementById('downloadButton');
+                downloadButton.disabled = false;
+                downloadButton.classList.add('completed'); 
+
+                // 顯示處理好的資料
+                downloadButton.onclick = function() {
+                    const link = document.createElement('a');
+                    const blob = new Blob([data.result], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = 'processed_data.csv';
+                    link.click();
+                };
+            } else {
+                alert('檔案處理失敗: ' + data.message);
+            }
+        })
+        .catch(error => {
+            document.getElementById('loading').style.display = 'none';
+            console.error('Error:', error);
+            alert('檔案處理失敗: ' + error.message);
+        });
 });
